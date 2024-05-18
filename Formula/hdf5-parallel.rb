@@ -2,22 +2,23 @@ class Hdf5Parallel < Formula
   # Adapted from official hdf5 formula to use MPI I/O
   desc "File format designed to store large amounts of data (parallel version)"
   homepage "https://www.hdfgroup.org/HDF5"
-  url "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.1/src/hdf5-1.14.1-2.tar.bz2"
-  version "1.14.1"
-  sha256 "06ca141d1a3c312b5d7cc4826a12737293ae131031748861689f6a2ec8219dbd"
+  url "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.14/hdf5-1.14.3/src/hdf5-1.14.3.tar.bz2"
+  version "1.14.3"
+  sha256 "9425f224ed75d1280bb46d6f26923dd938f9040e7eaebf57e66ec7357c08f917"
   license "BSD-3-Clause"
   version_scheme 1
 
   bottle do
     root_url "http://forge.abinit.org/homebrew"
-    sha256 cellar: :any, arm64_ventura: "4b4377ae8dfc99acc2c1a2569f8b7adc5c82b7f7991aeb2f1a9cbd643a8d18c0"
-    sha256 cellar: :any, arm64_monterey: "c4cb08c9c3f5ff91e13f9e897f34d6b0efa719ce98120d4f51361c5207a403ea"
-    sha256 cellar: :any, ventura: "efef5a40db67c107dc3f97d359c8e6ae879694fe9fda522bb9b71f63f6b57717"
-    sha256 cellar: :any, monterey: "fb23ff1d4e33e30c57b4e1568e320a31c8e90a8d074cfb9a0d2ed75cc6045bd4"
-    sha256 cellar: :any, big_sur: "454ba67e6a4a77dae38bf3bdf3fcda13e54527abf40b1db1154f02de665be8fe"
-    sha256 cellar: :any, catalina: "43c6b59fbde52c4f28e8feb6b86b11de2dc0f08966b4b18e70acdfbb674ef5ea"
-    sha256 cellar: :any, mojave: "402cec82f3908ab530db88e47e031758657e230c1edfd95100368228015b8ca0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "593f90c3a7727d5a4a12b65e9df394de203d8c5f99188de9832407b34cc82f9d"
+    sha256 cellar: :any, arm64_sonoma: "50faf8e52f2e15ad59e4ad537d4552a1a99e3583f74a257780489500d04a3a7e"
+    sha256 cellar: :any, arm64_monterey: "e705924bb580fa3d6f25058f03599f373e92833ac4425b368fdeeb9e8cecfb26"
+    sha256 cellar: :any, arm64_ventura: "efd2bfabaa78d255a3fea9b2da25257852a33269fd23e9045417d4ca8df80205"
+    sha256 cellar: :any, sonoma: "6e54f197c8af0e2a888de56d5dda37a807974418e13f13e825e42d9f48cf9074"
+    sha256 cellar: :any, monterey: "52fd648c9d0f922a77f1c2e5e5ae5bf97318f96376fc796327ab9f74d0c6e69f"
+    sha256 cellar: :any, ventura: "32fdcced0d3d2b36a79ee925ce4890192426695581e7ac37775efb65ccb0f6da"
+    sha256 cellar: :any, big_sur: "70fe2cbd56c0ec4a0701b5c79e9fb019bb7b3336cd903b2f907e875c0d2a66bc"
+    sha256 cellar: :any, catalina: "6e4c97cd91e739dfab1a60cf9337b6052effc94c16f9656bd0cd9896e3c52aee"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "46c13e40e1d53dd2ed892cd2fcc56defca4dd94fde31f4328607875b0
   end
 
   keg_only "conflict with serial hdf5 and hdf5-mpi packages"
@@ -32,6 +33,11 @@ class Hdf5Parallel < Formula
   uses_from_macos "zlib"
 
   def install
+
+    # Work around incompatibility with new linker (FB13194355)
+    # https://github.com/HDFGroup/hdf5/issues/3571
+    ENV.append "LDFLAGS", "-Wl,-ld_classic" if DevelopmentTools.clang_build_version >= 1500
+
     inreplace %w[c++/src/h5c++.in fortran/src/h5fc.in bin/h5cc.in],
               "${libdir}/libhdf5.settings",
               "#{pkgshare}/libhdf5.settings"

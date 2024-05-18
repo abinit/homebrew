@@ -8,14 +8,15 @@ class NetcdfParallel < Formula
 
   bottle do
     root_url "http://forge.abinit.org/homebrew"
-    sha256 cellar: :any, arm64_ventura: "9286e9d7d7881cb7b67811379f567743b8df9db831eb3a5215fc8cea3683f72e"
-    sha256 cellar: :any, arm64_monterey: "cdda03fbeee4ab945c9b16ccef14e722cef55b8a61bdc8c59b40bc8b5fc60e4c"
-    sha256 cellar: :any, ventura: "4ed2493e9550980f52f1f3827baca0e383c94d6c66460fa85c2072d124b05f47"
-    sha256 cellar: :any, monterey: "9ae52ec2e28fec161856e57e59c827e2e64350f4f7d7b0778600b9e160421d2e"
-    sha256 cellar: :any, big_sur: "29000b7f0b71cde4ab7847361e1f55eb22acdca87e0ef75042587cae23e3f4ba"
-    sha256 cellar: :any, catalina: "7abc6c12dbc38170bb13c755a92e36a142f11cdf52495908f9a7aeb62cabc611"
-    sha256 cellar: :any, mojave: "edfc54d98407b2c7d4771d7d2ef7c534e7b9a445c91909001e13857e6f9a43cd"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "9bc8585dda051c46d8bb6d0c9f29d557cdc5812d6fef84f4edf64b8bb59e29b6"
+    sha256 cellar: :any, arm64_sonoma: "2fd26dbf3127b44df312fea26ebb49812c6bceb3004ce08fb9892608b66e65a8"
+    sha256 cellar: :any, arm64_monterey: "76f961b7cbb9f246e81e73b868497e1fc6c1a2c6d29bb005ab3bdb63684c2d1e"
+    sha256 cellar: :any, arm64_ventura: "470c818028479c2563b05d322aecfb6a16dbb17b8b645571fcae7fc9b82eeef1"
+    sha256 cellar: :any, sonoma: "72eb608b2ecc829a2b0f1bc73c8d43e1e1fdd10ba5cf7fe3a0c436faed32fa0a"
+    sha256 cellar: :any, monterey: "386c27d5a02a900f8693b5043992359a710efa70d770ff6180f7b33b321cbb85"
+    sha256 cellar: :any, ventura: "37b48a22899266e3164fbc7b7f423a52fd3639477dd6afad75d3501dba7297d3"
+    sha256 cellar: :any, big_sur: "914d46cd4aa81e1876df008681fd87a252185d8a6c42d6815f81b337bca9170f"
+    sha256 cellar: :any, catalina: "ec4c6105a88ea7b2465f8dc7a198909d928e1362e68e96c25c68a08848a6267f"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "99e8e252524ade6f23a6f786c2aed877d9d22bc577cf73252cf7890ca
   end
 
   keg_only "conflict with serial netcdf and pnetcdf packages"
@@ -24,19 +25,24 @@ class NetcdfParallel < Formula
   depends_on "open-mpi"
   depends_on "hdf5-parallel"
 
+  uses_from_macos "m4" => :build
+  uses_from_macos "bzip2"
   uses_from_macos "curl"
   uses_from_macos "libxml2"
+  uses_from_macos "zlib"
 
   def install
 
-    args = std_cmake_args + %w[-DCMAKE_Fortran_COMPILER=mpifort
-                               -DCMAKE_C_COMPILER=mpicc
+    args = std_cmake_args + %w[-DCMAKE_C_COMPILER=mpicc
                                -DCMAKE_CXX_COMPILER=mpicxx
                                -DBUILD_TESTING=OFF
                                -DENABLE_TESTS=OFF
                                -DENABLE_NETCDF_4=ON
                                -DENABLE_PARALLEL4=ON
                                -DENABLE_DOXYGEN=OFF]
+
+    # Fixes wrong detection of hdf5-parallel
+    args << "-DHDF5_ROOT=#{Formula["hdf5-parallel"].opt_prefix}"
 
     # Fixes "relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used" on Linux
     args << "-DCMAKE_POSITION_INDEPENDENT_CODE=ON" if OS.linux?

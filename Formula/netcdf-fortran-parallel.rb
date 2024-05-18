@@ -8,14 +8,15 @@ class NetcdfFortranParallel < Formula
 
   bottle do
     root_url "http://forge.abinit.org/homebrew"
-    sha256 cellar: :any, arm64_ventura: "55dddbf2b653f243cbe61377314bae52384a0ff6bbd67658d3fc53c096c91507"
-    sha256 cellar: :any, arm64_monterey: "658b6bf45526c7fd72731adde052c4d6dd5377656535530c749e75a12398a963"
-    sha256 cellar: :any, ventura: "2f9d0be493e7fb148a486611f3f4c042ff1521d833ce034b514749b002cea8ce"
-    sha256 cellar: :any, monterey: "f2f06355798b3c96afbd467158f9d6c0ca817632f06157e6510d539f9a6bb601"
-    sha256 cellar: :any, big_sur: "fee671911bfd5912d9aceeeb4e30da62880e5a2e68480c28ba64a2a87da0a949"
-    sha256 cellar: :any, catalina: "e2fdde0b0277917d08f63230ad2d1894c8e064d8ba8128df9c79b935bf423284"
-    sha256 cellar: :any, mojave: "390775ad8b9f3acb4cd067ef340c3195f118cd6064ddbfced915bdea89460f2a"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "3278f6a97f57f87b9bd203d0e20ee76f70dee57e074ebef822a56b1f8f7a5c9b"
+    sha256 cellar: :any, arm64_sonoma: "88e761cbe2f3826e95c63299e26f9c2485bfe96870159ae4def8db6374f566be"
+    sha256 cellar: :any, arm64_monterey: "4c33a391ee533104f3446b5ee34adfd1ea8e3e212ef088c94cd537316e995e72"
+    sha256 cellar: :any, arm64_ventura: "12fe4a39f729875c43939d6f6131db82d19c0262d9a25fbdf1ca56f9512fd7ce"
+    sha256 cellar: :any, sonoma: "69660ed461a60403c08f0117d5a89de02d443b64ac045269e645f9e9fe814c21"
+    sha256 cellar: :any, monterey: "93c63b9205b8859c56f916e668334a4f49a27eb512fa36a0814d9b2d0d7ea330"
+    sha256 cellar: :any, catalina: "dfebdbd585b53feed39814d44b7c44bf34acf47ba74f785d0b2bec253fa42b02"
+    sha256 cellar: :any, big_sur: "ef7226fcff9a50acdb635b92d8c7970ceb78f72386768568531e68318408bdf1"
+    sha256 cellar: :any, ventura: "f026c6a2382e6d7f4111c48a50b19aded6785e4a2f342bb443cb9871cbd52354"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "cf5e3909b9e0d89d108a2a2abcc068f9c7023e370febdeb1aa27e9b7c
   end
 
   keg_only "conflict with serial netcdf-fortran packages"
@@ -29,12 +30,12 @@ class NetcdfFortranParallel < Formula
 
    args = std_cmake_args + %w[-DCMAKE_Fortran_COMPILER=mpifort
                               -DCMAKE_C_COMPILER=mpicc
-                              -DCMAKE_CXX_COMPILER=mpicxx
                               -DBUILD_TESTING=OFF
                               -DENABLE_TESTS=OFF
-                              -DENABLE_NETCDF_4=ON
-                              -DENABLE_PARALLEL4=ON
                               -DENABLE_DOXYGEN=OFF]
+
+    # Fixes wrong detection of netcdf-parallel
+    args << "-DNETCDF_ROOT=#{Formula["netcdf-parallel"].opt_prefix}"
 
     system "cmake", "-S", ".", "-B", "build_shared", *args, "-DBUILD_SHARED_LIBS=ON"
     system "cmake", "--build", "build_shared"

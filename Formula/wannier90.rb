@@ -7,14 +7,15 @@ class Wannier90 < Formula
 
   bottle do
     root_url "http://forge.abinit.org/homebrew"
-    sha256 cellar: :any, arm64_ventura: "8decb652d6fdbc243fb46a529e3d54ad528d0b0d402d99f2d27a8c2941da645b"
-    sha256 cellar: :any, arm64_monterey: "74c52952ecfe6a34777f98c287f558909ba18d2450182a46de20895e885df655"
-    sha256 cellar: :any, ventura: "5ecf8a16f61846a77f072367d0cfeb0a8011a3afd7751299bd2ec9703ada9c52"
-    sha256 cellar: :any, monterey: "a86350f5a0a5bbe875dc9548c56f90a1bb084d31f45c9ad4932d4a551a672247"
-    sha256 cellar: :any, big_sur: "6815690d4b715ad2652c645a1ff0151650ec35028e527240baec730679a9c8ed"
-    sha256 cellar: :any, catalina: "b7904b6722691f06e7029137cb6236806f783dd56090b4912639e9e20f2ed837"
-    sha256 cellar: :any, mojave: "048d6346310ad682f2d1bad03d5603238228cdbc174cd0d398fe69986c1b0b7d"
-    sha256 cellar: :any_skip_relocation, x86_64_linux: "1576151ce1227a520262489586f3aa0b3eb26c2ab378f488f6f81ae13779f5c5"
+    sha256 cellar: :any, arm64_sonoma: "33f1e6ec25faaf31aea12e09f918c802ed1217f4bceb7b40c74c63f49624d3cd"
+    sha256 cellar: :any, arm64_monterey: "7fd98a631af65046836ed8dce48b0c1268bb9527f8273e0a1f9804902ad6b4cf"
+    sha256 cellar: :any, arm64_ventura: "07b2ec165b4e1537d6c6d92f5f77e6ffeefe1b4eafcda2ce6b603c17ad256a2d"
+    sha256 cellar: :any, sonoma: "a457d3d90374d1a829c84412be323090c8e84952c8fbf184c0a1f7cbda0a27a0"
+    sha256 cellar: :any, monterey: "3ed0079cd1934c28d8de88a8b204e62aeca478b83830983f58ad3aa30bbbd788"
+    sha256 cellar: :any, ventura: "b9bcd7b1321ae3a8adc72fd744889126d048dbbe1161d4ec43953c1036e56a23"
+    sha256 cellar: :any, big_sur: "080e4c2843a1e93b613a269ad043bc757fd3be1e93676494b36f7a8083d231f7"
+    sha256 cellar: :any, catalina: "8455fa4e142912667f1814e1c04cafcd8a09f927d47161cf7ce714da49a663f1"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "dc3031d7b198de6b2b8b78f2d8f8e2fcadc5ea3aae676ab8c3fc23848
   end
 
   option "without-test", "Skip build-time quick tests (not recommended)"

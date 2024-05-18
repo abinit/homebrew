@@ -10,11 +10,12 @@ class Abinit < Formula
     sha256 cellar: :any, arm64_sonoma: "ce0e37b3fef4cf377241d273f5bd9a45a3ec80e6ac5a535dddf90d363c8b399a"
     sha256 cellar: :any, arm64_ventura: "67fafbfa079a12306e3251b37702b9ac96d4267a8f4ac07eb4a7c5535412f1d2"
     sha256 cellar: :any, arm64_monterey: "a5744b1b8f50018abef66e4c88267a92c89163812e0dad411af8c431566ec4fa"
-    #sha256 cellar: :any, ventura: "a557f549f7c99f49bc551bff47ab3929544c3b1bfdf80824083d9d1336ca69be"
-    #sha256 cellar: :any, monterey: "0bca7894357bb7cbb3c57d7fe35419b25323cfeefe3d6a5f326ff344902a2a0a"
-    #sha256 cellar: :any, big_sur: "0b1a6e59f04194b1c0057aacef878b3284b2d68c208e59b6f81d939af6721e91"
-    #sha256 cellar: :any, catalina: "f65cbdfa048b8e759fa9013bade18297be99db563edf6f2c6145f09a5c713c91"
-    #sha256 cellar: :any_skip_relocation, x86_64_linux: "d20af4be1cf331efda6589f5d6fa43143663d1e76ec282d96a4092aa4a1eb7dd"
+    sha256 cellar: :any, sonoma: "df2d2066d3b4aa81191fd488f140a577e74e544e1f27d541e2826b2720543112"
+    sha256 cellar: :any, monterey: "d6dad30672e8fa2ffff1fe17a9a3bccfd0e9c44d354a901a316364b657576d36"
+    sha256 cellar: :any, ventura: "4e43e1c012dbebba6bce530b66e00174d5a6bff2a8ccf4be0c5480530600491b"
+    sha256 cellar: :any, big_sur: "ead8d6d4209a2c61b5823319b2322e3ed100425195efa8592dd9c113b847e896"
+    sha256 cellar: :any, catalina: "1663ca4f30e67904a933a9ed72f0cffb16e58babb6cdc9925cd971f6499eda50"
+    sha256 cellar: :any_skip_relocation, x86_64_linux: "fd4953210bd307f5a0523cbfcbc0ed8abe4e9d4809601ce71be36ab77037da42"
   end
 
   option "without-openmp", "Disable OpenMP multithreading"
@@ -46,16 +47,14 @@ class Abinit < Formula
       FC=mpifort
     ]
 
-    #compilers << "FCFLAGS_EXTRA=-fallow-argument-mismatch -Wno-missing-include-dirs"
-    compilers << "FCFLAGS=-g -O2 -march=native -fallow-argument-mismatch -Wno-missing-include-dirs"
+    compilers << "FCFLAGS_EXTRA=-fallow-argument-mismatch -Wno-missing-include-dirs"
 
-    # mpicc (clang) <15 does not accept -march on arm
-    if OS.mac? && Hardware::CPU.arm? && (DevelopmentTools.clang_build_version < 1500)
-      compilers << "CFLAGS=-g -O2"
-      compilers << "CXXFLAGS=-g -O2"
-    else
-      compilers << "CFLAGS=-g -O2 -march=native"
-      compilers << "CXXFLAGS=-g -O2 -march=native"
+    # On arm mpicc (clang) does not handle correctly -march and -mtune
+    if OS.mac? && Hardware::CPU.arm? 
+      inreplace "configure", "-mtune=native -march=native", "-march=native"
+      if (DevelopmentTools.clang_build_version < 1500)
+        inreplace "configure", "-march=native", ""
+      end
     end
 
     args = %W[
